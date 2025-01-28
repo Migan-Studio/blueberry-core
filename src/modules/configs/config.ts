@@ -10,6 +10,9 @@ export class Config {
 
   public readonly api = {
     opendict: process.env.API_OPENDICT!,
+    blueberry: {
+      port: Number(process.env.API_BLUEBERRY_PORT!),
+    },
   }
 
   public database_url = process.env.DATABASE_URL!

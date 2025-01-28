@@ -1,6 +1,12 @@
 // import { version } from '../package.json'
-import { Config, NODE_ENV, ReleaseChannel, version } from './modules'
-import { Maintenance } from './modules/api'
+import {
+  Config,
+  NODE_ENV,
+  ReleaseChannel,
+  version,
+  Maintenance,
+  BlueBerryServer,
+} from './modules'
 import { PrismaClient } from '@prisma/client'
 import { SapphireClient, container, LogLevel } from '@sapphire/framework'
 import { GatewayIntentBits, Partials } from 'discord.js'
@@ -33,6 +39,7 @@ container.embedColors = {
 }
 container.maintenance = null
 container.heartbeatInterval = 60_000
+container.apiServer = new BlueBerryServer(config.api.blueberry.port)
 
 if (release.startsWith('e')) {
   container.channel = 'Canary'
@@ -65,6 +72,7 @@ export default class MuffinBot extends SapphireClient {
   }
 
   public override async login(): Promise<string> {
+    container.apiServer.start()
     return super.login(config.bot.token)
   }
 }
@@ -85,6 +93,7 @@ declare module '@sapphire/framework' {
     }
     maintenance: Maintenance | null
     heartbeatInterval: number
+    apiServer: BlueBerryServer
   }
 
   interface DetailedDescriptionCommandObject {
